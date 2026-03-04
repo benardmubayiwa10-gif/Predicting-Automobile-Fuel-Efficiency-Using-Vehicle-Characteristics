@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>auto.R — README</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inconsolata:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #1a1612;
+    --paper:   #f5f0e8;
+    --cream:   #ede7d9;
+    --rule:    #c8bfae;
+    --accent:  #c0392b;
+    --accent2: #2471a3;
+    --muted:   #7d7163;
+    --code-bg: #262220;
+    --code-fg: #f0ebe0;
+    --tag-bg:  #e8dfd0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inconsolata', monospace;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* ── TOP RULE ── */
+  .top-rule {
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--accent) 0px, var(--accent) 60px,
+      var(--ink) 60px, var(--ink) 62px,
+      var(--paper) 62px, var(--paper) 64px
+    );
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 56px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+    animation: fadeIn 0.7s ease;
+  }
+  .header-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.6rem;
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent); }
+  .header-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .badge.r    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+  .badge.ml   { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .badge.stat { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .badge.viz  { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--ink);
+    padding: 24px 28px;
+    margin-bottom: 52px;
+    animation: fadeIn 0.8s ease 0.1s backwards;
+  }
+  .toc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a {
+    color: var(--accent2);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ── SECTIONS ── */
+  section {
+    margin-bottom: 52px;
+    animation: fadeIn 0.7s ease backwards;
+  }
+  section:nth-child(2)  { animation-delay: 0.05s; }
+  section:nth-child(3)  { animation-delay: 0.10s; }
+  section:nth-child(4)  { animation-delay: 0.15s; }
+  section:nth-child(5)  { animation-delay: 0.20s; }
+  section:nth-child(6)  { animation-delay: 0.25s; }
+  section:nth-child(7)  { animation-delay: 0.30s; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; gap: 12px;
+  }
+  h2 .sec-num {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 22px 0 10px;
+  }
+
+  p { margin-bottom: 14px; color: #2c2520; font-size: 0.92rem; }
+
+  /* ── STEP LIST ── */
+  .steps { list-style: none; padding: 0; }
+  .steps li {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--rule);
+    font-size: 0.88rem;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .step-num {
+    min-width: 28px; height: 28px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 600;
+    margin-top: 1px; flex-shrink: 0;
+  }
+  .step-body strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+  .step-body span { color: var(--muted); }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+  thead tr { background: var(--ink); color: var(--paper); }
+  thead th { padding: 10px 16px; text-align: left; font-weight: 600; letter-spacing: 0.05em; }
+  tbody tr { border-bottom: 1px solid var(--rule); }
+  tbody tr:nth-child(even) { background: var(--cream); }
+  tbody td { padding: 9px 16px; color: #2c2520; }
+  tbody td:first-child { font-weight: 500; color: var(--accent2); }
+
+  /* ── CODE BLOCK ── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 20px 24px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    margin: 16px 0;
+    position: relative;
+  }
+  pre .lang-tag {
+    position: absolute; top: 8px; right: 12px;
+    font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #7c6f5e;
+  }
+  code { font-family: 'Inconsolata', monospace; }
+  p code, li code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 0.84em;
+    color: var(--accent);
+  }
+
+  /* ── INLINE KEYWORD COLORS ── */
+  .kw  { color: #e67e73; }   /* keywords */
+  .fn  { color: #7ec8e3; }   /* functions */
+  .str { color: #a8cc8c; }   /* strings */
+  .cm  { color: #6a6052; font-style: italic; } /* comments */
+  .nm  { color: #f0c27f; }   /* numbers */
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--cream);
+    border-left: 4px solid var(--accent2);
+    padding: 14px 20px;
+    margin: 18px 0;
+    font-size: 0.86rem;
+    color: #2c2520;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout strong { color: var(--accent2); }
+
+  /* ── VARIABLE GRID ── */
+  .var-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .var-chip {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 0.78rem;
+  }
+  .var-chip .vname { font-weight: 600; color: var(--accent2); display: block; }
+  .var-chip .vtype { color: var(--muted); font-size: 0.7rem; }
+
+  /* ── PIPELINE VISUAL ── */
+  .pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 20px 0;
+    align-items: center;
+  }
+  .pipe-step {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    position: relative;
+  }
+  .pipe-step::after {
+    content: '▶';
+    position: absolute; right: -10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink); font-size: 0.7rem; z-index: 1;
+  }
+  .pipe-step:last-child::after { display: none; }
+  .pipe-step:nth-child(odd)  { background: var(--ink); }
+  .pipe-step:nth-child(even) { background: #3d3530; }
+  .pipe-gap { width: 8px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--ink);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-left { font-size: 0.72rem; color: var(--muted); }
+  .footer-left strong { color: var(--ink); }
+  .footer-right { font-size: 0.68rem; color: var(--rule); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .page { padding: 0 20px 60px; }
+    h1 { font-size: 2.4rem; }
+    .pipeline { flex-direction: column; align-items: flex-start; }
+    .pipe-step::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-rule"></div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-eyebrow">R Script Documentation</div>
+    <h1>auto<span>.R</span></h1>
+    <p class="header-desc">
+      An end-to-end vehicle fuel efficiency analysis pipeline — from raw data cleaning through
+      statistical modeling, KNN classification, and Random Forest prediction on the classic
+      Auto MPG dataset.
+    </p>
+    <div class="badge-row">
+      <span class="badge r">R Language</span>
+      <span class="badge ml">Machine Learning</span>
+      <span class="badge stat">Statistical Analysis</span>
+      <span class="badge viz">Visualization</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#requirements">Requirements</a></li>
+      <li><a href="#installation">Installation</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#pipeline">Pipeline</a></li>
+      <li><a href="#variables">Variables & Features</a></li>
+      <li><a href="#models">Models</a></li>
+      <li><a href="#output">Output</a></li>
+      <li><a href="#configuration">Configuration</a></li>
+    </ol>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <h2><span class="sec-num">01</span> Overview</h2>
+    <p>
+      This script performs a complete analysis of vehicle fuel efficiency using the <code>Auto.csv</code>
+      dataset. It covers exploratory data analysis, correlation study, time-trend modeling, group
+      comparisons via ANOVA, linear regression, and two classification models (KNN and Random Forest)
+      predicting whether a car's fuel efficiency is High or Low relative to the dataset median.
+    </p>
+
+    <div class="pipeline">
+      <div class="pipe-step">Load Data</div><div class="pipe-gap"></div>
+      <div class="pipe-step">Clean</div><div class="pipe-gap"></div>
+      <div class="pipe-step">EDA</div><div class="pipe-gap"></div>
+      <div class="pipe-step">ANOVA</div><div class="pipe-gap"></div>
+      <div class="pipe-step">Regression</div><div class="pipe-gap"></div>
+      <div class="pipe-step">KNN</div><div class="pipe-gap"></div>
+      <div class="pipe-step">Random Forest</div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section id="requirements">
+    <h2><span class="sec-num">02</span> Requirements</h2>
+    <p>R version 4.0 or higher is recommended. The following packages are required:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Package</th><th>Version</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>tidyverse</td><td>≥ 1.3</td><td>Data wrangling and transformation</td></tr>
+          <tr><td>caret</td><td>≥ 6.0</td><td>Train/test splitting and confusion matrix</td></tr>
+          <tr><td>randomForest</td><td>≥ 4.6</td><td>Random Forest classifier (500 trees)</td></tr>
+          <tr><td>class</td><td>≥ 7.3</td><td>K-Nearest Neighbours classification</td></tr>
+          <tr><td>corrplot</td><td>≥ 0.92</td><td>Correlation matrix visualisation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- INSTALLATION -->
+  <section id="installation">
+    <h2><span class="sec-num">03</span> Installation</h2>
+    <p>Install all required packages with a single command in your R console:</p>
+    <pre><span class="fn">install.packages</span>(<span class="fn">c</span>(<span class="str">"tidyverse"</span>, <span class="str">"caret"</span>, <span class="str">"randomForest"</span>, <span class="str">"class"</span>, <span class="str">"corrplot"</span>))<span class="lang-tag">R</span></pre>
+    <div class="callout">
+      <strong>Note:</strong> The install line is commented out in the script. Run it once in your R console before sourcing the script for the first time.
+    </div>
+  </section>
+
+  <!-- USAGE -->
+  <section id="usage">
+    <h2><span class="sec-num">04</span> Usage</h2>
+    <p>Place <code>Auto.csv</code> in your R working directory, then source the script:</p>
+    <pre><span class="cm"># Set working directory to where Auto.csv lives</span>
+<span class="fn">setwd</span>(<span class="str">"/path/to/your/data"</span>)
+
+<span class="cm"># Run the full pipeline</span>
+<span class="fn">source</span>(<span class="str">"auto.R"</span>)<span class="lang-tag">R</span></pre>
+    <p>
+      The script reads <code>Auto.csv</code> directly — no file picker is used.
+      All plots render to the active R graphics device and all model summaries print to the console.
+    </p>
+    <div class="callout">
+      <strong>Input file:</strong> <code>Auto.csv</code> must be in the working directory. The dataset should contain columns for <code>mpg</code>, <code>cylinders</code>, <code>displacement</code>, <code>horsepower</code>, <code>weight</code>, <code>acceleration</code>, <code>year</code>, and <code>origin</code>.
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section id="pipeline">
+    <h2><span class="sec-num">05</span> Pipeline</h2>
+    <ul class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Load Data</strong>
+          <span>Reads <code>Auto.csv</code> with <code>stringsAsFactors = FALSE</code>. Prints structure and summary statistics.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Data Cleaning</strong>
+          <span>Replaces <code>"?"</code> values in <code>horsepower</code> with <code>NA</code>, converts it to numeric, removes all rows with missing values, casts <code>origin</code> as a factor, and derives a binary <code>mpg_category</code> (High / Low) split at the median.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Correlation Matrix</strong>
+          <span>Computes Pearson correlations across all 7 numeric variables and renders a circle corrplot.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Scatter Plots</strong>
+          <span>Two base-R scatter plots: <em>Weight vs MPG</em> and <em>Horsepower vs MPG</em>.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Time Trend Analysis</strong>
+          <span>Plots MPG over model year with a fitted OLS trend line in red to visualise efficiency improvements over time.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <strong>Boxplots</strong>
+          <span>Group comparisons of MPG by number of cylinders and by region of origin.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <strong>ANOVA</strong>
+          <span>One-way ANOVA testing whether mean MPG differs significantly across cylinder groups.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <strong>Linear Regression</strong>
+          <span>OLS regression of <code>mpg</code> on all 7 predictors. Outputs coefficients, R², and significance tests.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">9</div>
+        <div class="step-body">
+          <strong>Train / Test Split</strong>
+          <span>Stratified 70/30 split on <code>mpg_category</code> using <code>set.seed(123)</code> for reproducibility.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">10</div>
+        <div class="step-body">
+          <strong>KNN Classification</strong>
+          <span>Features are z-score scaled. K-Nearest Neighbours with <code>k = 5</code> predicts High/Low MPG on the test set.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">11</div>
+        <div class="step-body">
+          <strong>Random Forest Classification</strong>
+          <span>Trains a Random Forest with 500 trees (<code>ntree = 500</code>) on all 7 predictors including the <code>origin</code> factor. Evaluates on the test set and plots variable importance.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- VARIABLES -->
+  <section id="variables">
+    <h2><span class="sec-num">06</span> Variables &amp; Features</h2>
+    <p>Features used across models:</p>
+    <div class="var-grid">
+      <div class="var-chip"><span class="vname">cylinders</span><span class="vtype">numeric</span></div>
+      <div class="var-chip"><span class="vname">displacement</span><span class="vtype">numeric</span></div>
+      <div class="var-chip"><span class="vname">horsepower</span><span class="vtype">numeric*</span></div>
+      <div class="var-chip"><span class="vname">weight</span><span class="vtype">numeric</span></div>
+      <div class="var-chip"><span class="vname">acceleration</span><span class="vtype">numeric</span></div>
+      <div class="var-chip"><span class="vname">year</span><span class="vtype">numeric</span></div>
+      <div class="var-chip"><span class="vname">origin</span><span class="vtype">factor</span></div>
+      <div class="var-chip"><span class="vname">mpg</span><span class="vtype">target (regression)</span></div>
+      <div class="var-chip"><span class="vname">mpg_category</span><span class="vtype">target (classification)</span></div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);">* <code>horsepower</code> contains <code>"?"</code> entries in the raw CSV which are coerced to <code>NA</code> and removed during cleaning.</p>
+
+    <h3>Target Variable</h3>
+    <p>
+      <code>mpg_category</code> is derived at runtime by splitting <code>mpg</code> at the dataset median.
+      Cars above the median are labelled <strong>High</strong>; those at or below are labelled <strong>Low</strong>.
+    </p>
+  </section>
+
+  <!-- MODELS -->
+  <section id="models">
+    <h2><span class="sec-num">07</span> Models</h2>
+
+    <h3>Linear Regression</h3>
+    <pre><span class="fn">lm</span>(mpg ~ cylinders + displacement + horsepower +
+        weight + acceleration + year + origin,
+   <span class="kw">data</span> = auto)<span class="lang-tag">R</span></pre>
+    <p>Predicts continuous <code>mpg</code>. Outputs coefficient table, adjusted R², and F-statistic.</p>
+
+    <h3>K-Nearest Neighbours (KNN)</h3>
+    <pre><span class="fn">knn</span>(train_x, test_x, train_y, <span class="kw">k</span> = <span class="nm">5</span>)<span class="lang-tag">R</span></pre>
+    <p>Classifies <code>mpg_category</code>. All 6 numeric predictors are z-score scaled before fitting. No <code>origin</code> factor (numeric features only).</p>
+
+    <h3>Random Forest</h3>
+    <pre><span class="fn">randomForest</span>(mpg_category ~ cylinders + displacement +
+               horsepower + weight + acceleration +
+               year + origin,
+             <span class="kw">data</span> = train, <span class="kw">ntree</span> = <span class="nm">500</span>)<span class="lang-tag">R</span></pre>
+    <p>Classifies <code>mpg_category</code> using all 7 predictors including <code>origin</code>. Produces a variable importance plot via <code>varImpPlot()</code>.</p>
+  </section>
+
+  <!-- OUTPUT -->
+  <section id="output">
+    <h2><span class="sec-num">08</span> Output</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Output</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>str / summary</td><td>Console</td><td>Dataset structure and descriptive statistics</td></tr>
+          <tr><td>Correlation plot</td><td>Plot</td><td>Circle corrplot of 7 numeric variables</td></tr>
+          <tr><td>Scatter: Weight vs MPG</td><td>Plot</td><td>Base-R scatter plot</td></tr>
+          <tr><td>Scatter: HP vs MPG</td><td>Plot</td><td>Base-R scatter plot</td></tr>
+          <tr><td>Time trend</td><td>Plot</td><td>Year vs MPG with OLS trend line</td></tr>
+          <tr><td>Boxplot: Cylinders</td><td>Plot</td><td>MPG distribution per cylinder count</td></tr>
+          <tr><td>Boxplot: Origin</td><td>Plot</td><td>MPG distribution per region of origin</td></tr>
+          <tr><td>ANOVA summary</td><td>Console</td><td>F-statistic and p-value for cylinder groups</td></tr>
+          <tr><td>Linear model summary</td><td>Console</td><td>Coefficients, R², p-values</td></tr>
+          <tr><td>KNN confusion matrix</td><td>Console</td><td>Accuracy, sensitivity, specificity</td></tr>
+          <tr><td>RF confusion matrix</td><td>Console</td><td>Accuracy, sensitivity, specificity</td></tr>
+          <tr><td>Variable importance plot</td><td>Plot</td><td>MeanDecreaseGini per feature</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CONFIGURATION -->
+  <section id="configuration">
+    <h2><span class="sec-num">09</span> Configuration</h2>
+    <p>Key parameters you may want to adjust:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Default</th><th>Location</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>train/test split</td><td>0.7 / 0.3</td><td>Step 10 — <code>p = 0.7</code></td><td>Proportion of data used for training</td></tr>
+          <tr><td>random seed</td><td>123</td><td>Step 10 — <code>set.seed(123)</code></td><td>Controls reproducibility of the split</td></tr>
+          <tr><td>KNN neighbours</td><td>5</td><td>Step 12 — <code>k = 5</code></td><td>Number of neighbours in KNN</td></tr>
+          <tr><td>RF trees</td><td>500</td><td>Step 14 — <code>ntree = 500</code></td><td>Number of trees in Random Forest</td></tr>
+          <tr><td>MPG threshold</td><td>median(mpg)</td><td>Step 3 — <code>ifelse(...)</code></td><td>Boundary for High/Low classification</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <strong>auto.R</strong> — Auto MPG Analysis Pipeline &nbsp;·&nbsp; R ≥ 4.0
+    </div>
+    <div class="footer-right">readme · auto.r</div>
+  </footer>
+
+</div>
+</body>
+</html>
